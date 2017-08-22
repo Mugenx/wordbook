@@ -1,0 +1,82 @@
+<style media="screen">
+  h2 {
+    color: #4b4b4b;
+  }
+
+  #output button {
+    border: 0;
+    background-color: white;
+    font-weight: bold;
+  }
+
+  #output dd {
+    padding: 6px 0 0;
+  }
+</style>
+
+<div class="col-lg-8 col-lg-offset-2">
+  <h2>Translate</h2>
+  <hr>
+  <input id="word" class="form-control" type="text">
+
+  <button id='go' class="btn btn-info" type="submit" name="button" style="width:100%; margin:10px 0 0 ">Translate</button>
+</div>
+
+<div class="col-lg-8 col-lg-offset-2" style="margin-top:50px">
+  <h2>Words</h2>
+  <hr>
+  <dl id="output" class="dl-horizontal" style="margin-left:-100px">
+    <% for (var i = words.length-1; i >= 0; i--) { %>
+      <dt data-toggle="tooltip" title="Click to delete">
+        <button id='<%= words[i].id %>' class="btn"><%= words[i].word %></button>
+      </dt>
+      <dd>
+        <%= words[i].def %>
+      </dd>
+
+      <% } %>
+  </dl>
+</div>
+
+
+<script type="text/javascript">
+  $('#go').click(function () {
+    var word = $('#word').val();
+
+    $.ajax({
+      url: "/translte",
+      method: 'POST',
+      data: {
+        word: word
+      },
+      // dataType:'text',
+      success: function (data) {
+        // $('<dt>' + word + '</dt><dd>' + data + '</dd>').prependTo('#output');
+        // $('#word').val('');
+        location.reload();
+      }
+
+    });
+  });
+
+  $('#ouput,button').click(function () {
+
+    var id = this.id;
+
+    $.ajax({
+      url: "/delete",
+      method: 'POST',
+      data: {
+        id: id
+      },
+
+    }) // end of ajax
+    location.reload();
+  });
+
+  $('#word').keypress(function (e) {
+    if (e.which == 13) { //Enter key pressed
+      $('#go').click(); //Trigger search button click event
+    }
+  });
+</script>
